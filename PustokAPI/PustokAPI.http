@@ -1,0 +1,6 @@
+@PustokAPI_HostAddress = http://localhost:5117
+
+GET {{PustokAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
