@@ -5,4 +5,5 @@ namespace Pustok.Domain.Entities;
 public class AppUser:IdentityUser
 {
     public bool IsDisabled { get; set; }
+    public ICollection<BasketItem> BasketItems { get; set; } = [];
 }

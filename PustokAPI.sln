@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.37502.11 d17.14
+VisualStudioVersion = 17.14.37502.11
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pustok.Domain", "Pustok.Domain\Pustok.Domain.csproj", "{0DB19929-3C01-45A9-9F64-0959E418E0BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pustok.API", "Pustok.API\Pustok.API.csproj", "{34064516-51A0-4EEF-AD7C-C3AE8173258E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pustok.Infrastructure", "Pustok.Infrastructure\Pustok.Infrastructure.csproj", "{AAA0E503-C3A7-4DA6-80FE-13C81E2DCA47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{34064516-51A0-4EEF-AD7C-C3AE8173258E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34064516-51A0-4EEF-AD7C-C3AE8173258E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34064516-51A0-4EEF-AD7C-C3AE8173258E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAA0E503-C3A7-4DA6-80FE-13C81E2DCA47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA0E503-C3A7-4DA6-80FE-13C81E2DCA47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA0E503-C3A7-4DA6-80FE-13C81E2DCA47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA0E503-C3A7-4DA6-80FE-13C81E2DCA47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

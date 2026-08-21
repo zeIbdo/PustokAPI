@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Pustok.Domain.Entities;
+
+namespace Pustok.Infrastructure.Contexts;
+
+public class AppDbContext : IdentityDbContext<AppUser>
+{
+    public AppDbContext(DbContextOptions options) : base(options)
+    {
+    }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<BasketItem> BasketItems { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
+    public DbSet<ProductTag> ProductTags { get; set; }
+    public DbSet<Service> Services { get; set; }
+    public DbSet<Setting> Settings { get; set; }
+    public DbSet<Slider> Sliders { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+}
