@@ -2,7 +2,7 @@
 
 namespace Pustok.Domain.Entities;
 
-public class Product : BaseEntity
+public class Product : BaseAuditableEntity
 {
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
@@ -14,11 +14,6 @@ public class Product : BaseEntity
     public int ViewCount { get; set; } = 0;
     public string ProductCode { get; set; } = null!;
     public decimal? RatingStar { get; set; }
-    public string CreatedBy { get; set; } = null!;
-    public string UpdatedBy { get; set; } = null!;
-    public bool IsDeleted { get; set; } = false;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<ProductTag> ProductTags { get; set; } = [];
     public ICollection<BasketItem> BasketItems { get; set; } = [];
     public ICollection<ProductImage> ProducImages { get; set; } = [];

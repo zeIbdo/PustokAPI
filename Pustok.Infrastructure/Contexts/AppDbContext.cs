@@ -1,13 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pustok.Domain.Entities;
+using Pustok.Infrastructure.Interceptors;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Pustok.Infrastructure.Contexts;
 
 public class AppDbContext : IdentityDbContext<AppUser>
 {
-    public AppDbContext(DbContextOptions options) : base(options)
+    private readonly AuditInterceptor _interceptor;
+    public bool BypassAuditableInterceptor { get; set; } = false;
+    public AppDbContext(DbContextOptions options, AuditInterceptor interceptor) : base(options)
     {
+        _interceptor = interceptor;
     }
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -19,4 +25,14 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Slider> Sliders { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_interceptor);
+        base.OnConfiguring(optionsBuilder);
+    }
 }
