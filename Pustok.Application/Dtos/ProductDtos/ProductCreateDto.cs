@@ -1,8 +1,9 @@
-﻿using Pustok.Domain.Entities.Common;
+﻿using Microsoft.AspNetCore.Http;
+using Pustok.Application.Dtos.Generic;
 
-namespace Pustok.Domain.Entities;
+namespace Pustok.Application.Dtos.ProductDtos;
 
-public class Product : BaseAuditableEntity
+public class ProductCreateDto:IDto
 {
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
@@ -10,11 +11,10 @@ public class Product : BaseAuditableEntity
     public decimal Discount { get; set; } = 0;
     public int Stock { get; set; }
     public int CategoryId { get; set; }
-    public Category Category { get; set; } = null!;
     public int ViewCount { get; set; } = 0;
     public string ProductCode { get; set; } = null!;
     public decimal? RatingStar { get; set; }
-    public ICollection<ProductTag> ProductTags { get; set; } = [];
-    public ICollection<BasketItem> BasketItems { get; set; } = [];
-    public ICollection<ProductImage> ProductImages { get; set; } = [];
+    public ICollection<int> TagIds { get; set; } = [];
+    public ICollection<IFormFile> AdditionalImages { get; set; } = [];
+    public IFormFile MainImage { get; set; } = null!; 
 }

@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 
 namespace Pustok.API
 {

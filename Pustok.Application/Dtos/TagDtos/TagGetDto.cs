@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Pustok.Application.Dtos.Generic;
+using Pustok.Application.Dtos.ProductTagDtos;
+using Pustok.Domain.Entities;
 
-namespace Pustok.Application.Dtos.TagDtos
+namespace Pustok.Application.Dtos.TagDtos;
+
+public class TagGetDto : IDto
 {
-    internal class TagGetDto
-    {
-    }
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+    public ICollection<ProductTagGetDto> ProductTags { get; set; } = [];
 }
