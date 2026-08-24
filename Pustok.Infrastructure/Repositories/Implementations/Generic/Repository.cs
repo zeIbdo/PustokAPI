@@ -25,7 +25,7 @@ public class Repository<T> : IRepositoryAsync<T> where T : BaseEntity
         return entityEntry.Entity;
     }
 
-    public T DeleteAsync(T entity)
+    public T Delete(T entity)
     {
         var entityEntry = _table.Remove(entity);
 
@@ -60,7 +60,7 @@ public class Repository<T> : IRepositoryAsync<T> where T : BaseEntity
         return await query.FirstOrDefaultAsync(expression);
     }
 
-    public Task<Paginate<T>> GetPaginate(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool enableTracking = false,int index = 0,int size = 10)
+    public Task<Paginate<T>> GetPaginateAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool enableTracking = false,int index = 0,int size = 10)
     {
         var query = _getQueryWithParamters(include, enableTracking);
         if(predicate is not null)
@@ -75,7 +75,7 @@ public class Repository<T> : IRepositoryAsync<T> where T : BaseEntity
         throw new NotImplementedException();
     }
 
-    public T UpdateAsync(T entity)
+    public T Update(T entity)
     {
         var entityEntry = _table.Update(entity);
         return entityEntry.Entity;

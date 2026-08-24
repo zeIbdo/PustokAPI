@@ -9,5 +9,5 @@ public interface IGetService<TGetDto> where TGetDto : IDto
 
     Task<List<TGetDto>> GetAllAsync();
 
-    Task<Paginate<TGetDto>> GetPaginateAsync();
+    Task<Paginate<TGetDto>> GetPaginateAsync(int index = 0, int size = 10);
 }

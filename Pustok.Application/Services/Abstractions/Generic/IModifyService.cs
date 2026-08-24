@@ -7,6 +7,6 @@ public interface IModifyService<TCreateDto, TUpdateDto>
     where TUpdateDto : IDto
 {
     Task<int> CreateAsync(TCreateDto dto);
-    Task UpdateAsync(TUpdateDto dto);
+    Task UpdateAsync(TUpdateDto dto,int id);
     Task DeleteAsync(int id);
 }

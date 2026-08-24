@@ -12,13 +12,13 @@ public interface IRepositoryAsync<T> where T : BaseEntity
     IQueryable<T> GetAll(Expression<Func<T, bool>>? predicate=null,
         Func<IQueryable<T>,IIncludableQueryable<T,object>>? include = null,
         Func<IQueryable<T>,IOrderedQueryable<T>>? orderBy=null, bool enableTracking = false);
-    Task<Paginate<T>> GetPaginate(Expression<Func<T, bool>>? predicate=null,
+    Task<Paginate<T>> GetPaginateAsync(Expression<Func<T, bool>>? predicate=null,
         Func<IQueryable<T>,IIncludableQueryable<T,object>>? include = null,
         Func<IQueryable<T>,IOrderedQueryable<T>>? orderBy=null, bool enableTracking = false,int index=0,int size=10);
 
     Task<bool> DoesExistAsync(Expression<Func<T, bool>> expression);
     Task<T> CreateAsync(T entity);
-    T UpdateAsync(T entity);
-    T DeleteAsync(T entity);
+    T Update(T entity);
+    T Delete(T entity);
     Task<int> SaveChangesAsync(bool bypassInterceptor = false);
 }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Pustok.Application.Dtos.SliderDtos;
+using Pustok.Application.Exceptions;
 using Pustok.Application.Services.Abstractions;
+using Pustok.Domain.Entities;
 using Pustok.Infrastructure.Paging;
 using Pustok.Infrastructure.Repositories.Abstractions;
 
@@ -17,33 +20,50 @@ public class SliderService : ISliderService
         _mapper = mapper;
     }
 
-    public Task<int> CreateAsync(SliderCreateDto dto)
+    public async Task<int> CreateAsync(SliderCreateDto dto)
     {
-        throw new NotImplementedException();
+        var slider = _mapper.Map<Slider>(dto);
+        var createdSlider = await _sliderRepository.CreateAsync(slider);
+        await _sliderRepository.SaveChangesAsync();
+        return createdSlider.Id;
     }
 
-    public Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var slider = await _sliderRepository.GetAsync(id);
+        if (slider == null)
+            throw new NotFoundException("Slider Not Found");
+         _sliderRepository.Delete(slider);
+        await _sliderRepository.SaveChangesAsync();
     }
 
-    public Task<List<SliderGetDto>> GetAllAsync()
+    public async Task<List<SliderGetDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var sliders = _sliderRepository.GetAll();
+        return _mapper.Map<List<SliderGetDto>>(await sliders.ToListAsync());
     }
 
-    public Task<SliderGetDto> GetAsync(int id)
+    public async Task<SliderGetDto> GetAsync(int id)
     {
-        throw new NotImplementedException();
+        var slider = await _sliderRepository.GetAsync(id);
+        if (slider == null)
+            throw new NotFoundException("Slider Not Found");
+        return _mapper.Map<SliderGetDto>(slider);   
     }
 
-    public Task<Paginate<SliderGetDto>> GetPaginateAsync()
+    public async Task<Paginate<SliderGetDto>> GetPaginateAsync(int index=0,int size=10)
     {
-        throw new NotImplementedException();
+        var paginatedSliders = await _sliderRepository.GetPaginateAsync(index:index, size:size);
+        return _mapper.Map<Paginate<SliderGetDto>>(paginatedSliders);
     }
 
-    public Task UpdateAsync(SliderUpdateDto dto)
+    public async Task UpdateAsync(SliderUpdateDto dto, int id)
     {
-        throw new NotImplementedException();
+        var slider =await _sliderRepository.GetAsync(id);
+        if (slider == null)
+            throw new NotFoundException("Slider not found");
+        slider = _mapper.Map(dto, slider);
+        _sliderRepository.Update(slider);
+        await _sliderRepository.SaveChangesAsync();
     }
 }
