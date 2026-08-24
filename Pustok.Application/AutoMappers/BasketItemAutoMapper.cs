@@ -10,6 +10,5 @@ public class BasketItemAutoMapper : Profile
     {
         CreateMap<BasketItem, BasketItemGetDto>().ReverseMap();
         CreateMap<BasketItem, BasketItemCreateDto>().ReverseMap();
-        CreateMap<BasketItem, BasketItemUpdateDto>().ReverseMap();
     }
 }

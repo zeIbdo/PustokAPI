@@ -12,6 +12,7 @@ public class ProductAutoMapper : Profile
         CreateMap<ProductCreateDto, Product>().ForMember(dest => dest.ProductTags, opt => opt.MapFrom(src => src.TagIds.Select(ti => new ProductTag { TagId = ti }))).ReverseMap();
         CreateMap<ProductUpdateDto, Product>()
             .ForMember(dest => dest.ProductTags,
-                opt => opt.MapFrom(src => src.TagIds != null ? src.TagIds.Select(ti => new ProductTag { TagId = ti }).ToList() : null));
+                opt => opt.MapFrom(src => src.TagIds != null ? src.TagIds.Select(ti => new ProductTag { TagId = ti }).ToList() : null))
+            .ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
     }
 }

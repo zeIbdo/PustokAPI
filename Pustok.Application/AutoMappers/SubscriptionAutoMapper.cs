@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Pustok.Application.Dtos.SubscriptionDtos;
+using Pustok.Application.Dtos.TagDtos;
 using Pustok.Domain.Entities;
 
 namespace Pustok.Application.AutoMappers;
@@ -10,6 +11,6 @@ public class SubscriptionAutoMapper : Profile
     {
         CreateMap<Subscription, SubscriptionGetDto>().ReverseMap();
         CreateMap<Subscription, SubscriptionCreateDto>().ReverseMap();
-        CreateMap<Subscription, SubscriptionUpdateDto>().ReverseMap();
+        CreateMap<SubscriptionUpdateDto, Subscription>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
     }
 }

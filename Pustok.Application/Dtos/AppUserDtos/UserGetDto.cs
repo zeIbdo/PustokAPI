@@ -1,4 +1,5 @@
-﻿using Pustok.Application.Dtos.Generic;
+﻿using Pustok.Application.Dtos.BasketItemDtos;
+using Pustok.Application.Dtos.Generic;
 
 namespace Pustok.Application.Dtos.AppUserDtos;
 

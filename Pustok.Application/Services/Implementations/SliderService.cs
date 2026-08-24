@@ -1,11 +1,22 @@
-﻿using Pustok.Application.Dtos.SliderDtos;
+﻿using AutoMapper;
+using Pustok.Application.Dtos.SliderDtos;
 using Pustok.Application.Services.Abstractions;
 using Pustok.Infrastructure.Paging;
+using Pustok.Infrastructure.Repositories.Abstractions;
 
 namespace Pustok.Application.Services.Implementations;
 
 public class SliderService : ISliderService
 {
+    private readonly ISliderRepository _sliderRepository;
+    private readonly IMapper _mapper;
+
+    public SliderService(ISliderRepository sliderRepository, IMapper mapper)
+    {
+        _sliderRepository = sliderRepository;
+        _mapper = mapper;
+    }
+
     public Task<int> CreateAsync(SliderCreateDto dto)
     {
         throw new NotImplementedException();
