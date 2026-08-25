@@ -13,16 +13,19 @@ public class SliderService : ISliderService
 {
     private readonly ISliderRepository _sliderRepository;
     private readonly IMapper _mapper;
+    private readonly IFileService _fileService;
 
-    public SliderService(ISliderRepository sliderRepository, IMapper mapper)
+    public SliderService(ISliderRepository sliderRepository, IMapper mapper, IFileService fileService)
     {
         _sliderRepository = sliderRepository;
         _mapper = mapper;
+        _fileService = fileService;
     }
 
     public async Task<int> CreateAsync(SliderCreateDto dto)
     {
         var slider = _mapper.Map<Slider>(dto);
+        slider.ImageUrl = await _fileService.CreateFileAsync(dto.Image);
         var createdSlider = await _sliderRepository.CreateAsync(slider);
         await _sliderRepository.SaveChangesAsync();
         return createdSlider.Id;
@@ -33,7 +36,10 @@ public class SliderService : ISliderService
         var slider = await _sliderRepository.GetAsync(id);
         if (slider == null)
             throw new NotFoundException("Slider Not Found");
-         _sliderRepository.Delete(slider);
+        var imageDeletion = await _fileService.RemoveFileAsync(slider.ImageUrl!);
+        if (!imageDeletion)
+            throw new ImageDeletionException();
+        _sliderRepository.Delete(slider);
         await _sliderRepository.SaveChangesAsync();
     }
 
@@ -48,21 +54,28 @@ public class SliderService : ISliderService
         var slider = await _sliderRepository.GetAsync(id);
         if (slider == null)
             throw new NotFoundException("Slider Not Found");
-        return _mapper.Map<SliderGetDto>(slider);   
+        return _mapper.Map<SliderGetDto>(slider);
     }
 
-    public async Task<Paginate<SliderGetDto>> GetPaginateAsync(int index=0,int size=10)
+    public async Task<Paginate<SliderGetDto>> GetPaginateAsync(int index = 0, int size = 10)
     {
-        var paginatedSliders = await _sliderRepository.GetPaginateAsync(index:index, size:size);
+        var paginatedSliders = await _sliderRepository.GetPaginateAsync(index: index, size: size);
         return _mapper.Map<Paginate<SliderGetDto>>(paginatedSliders);
     }
 
     public async Task UpdateAsync(SliderUpdateDto dto, int id)
     {
-        var slider =await _sliderRepository.GetAsync(id);
+        var slider = await _sliderRepository.GetAsync(id);
         if (slider == null)
             throw new NotFoundException("Slider not found");
         slider = _mapper.Map(dto, slider);
+        if (dto.Image != null)
+        {
+            var imageDeletion = await _fileService.RemoveFileAsync(slider.ImageUrl!);
+            if (!imageDeletion)
+                throw new ImageDeletionException();
+            slider.ImageUrl = await _fileService.CreateFileAsync(dto.Image);
+        }
         _sliderRepository.Update(slider);
         await _sliderRepository.SaveChangesAsync();
     }
