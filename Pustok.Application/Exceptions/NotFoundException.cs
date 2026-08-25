@@ -3,11 +3,4 @@ using System.Net;
 
 namespace Pustok.Application.Exceptions;
 
-public class NotFoundException : Exception, ICustomException
-{
-    public NotFoundException(string message = "Not found") : base(message)
-    {
-    }
-
-    public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.NotFound;
-}
+public class NotFoundException(string message = "Not found") : AppException(message, HttpStatusCode.NotFound);

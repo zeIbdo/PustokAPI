@@ -79,8 +79,10 @@ public class ProductService : IProductService
         foreach (var img in productImgs)
         {
             var deletion = await _fileService.RemoveFileAsync(img.ImageUrl);
-            if (deletion)
-                _productImageRepository.Delete(img);
+            if (!deletion)
+                throw new ImageDeletionException();
+
+            _productImageRepository.Delete(img);
         }
         foreach (var productTag in _productTagRepository.GetAll(predicate: x => x.ProductId == product.Id).ToList())
         {
@@ -104,6 +106,8 @@ public class ProductService : IProductService
         Include(x => x.Category).
         Include(x => x.ProductTags).
         ThenInclude(y => y.Tag));
+        if (product == null)
+            throw new NotFoundException();
         return _mapper.Map<ProductGetDto>(product);
     }
 
@@ -112,7 +116,7 @@ public class ProductService : IProductService
         var products = await _productRepository.GetPaginateAsync(include: x => x.Include(y => y.ProductImages).
         Include(x => x.Category).
         Include(x => x.ProductTags).
-        ThenInclude(y => y.Tag));
+        ThenInclude(y => y.Tag), index: index, size: size);
         return _mapper.Map<Paginate<ProductGetDto>>(products);
     }
 
@@ -137,20 +141,48 @@ public class ProductService : IProductService
                     throw new NotFoundException("Tag not found");
             }
         }
-        if(dto.MainImage!= null)
+        product = _mapper.Map(dto, product);
+        if (dto.MainImage != null)
         {
-            var oldMainImg = await _productImageRepository.GetAsync(x=>x.ProductId==product.Id&&x.IsMain==true);
+            var oldMainImg = await _productImageRepository.GetAsync(x => x.ProductId == product.Id && x.IsMain == true);
             var mainImgDeletion = await _fileService.RemoveFileAsync(oldMainImg!.ImageUrl);
-            if (mainImgDeletion)
-                _productImageRepository.Delete(oldMainImg);
+            if (!mainImgDeletion)
+                throw new ImageDeletionException();
+
+            _productImageRepository.Delete(oldMainImg);
             var newMainImgUrl = await _fileService.CreateFileAsync(dto.MainImage);
             await _productImageRepository.CreateAsync(new ProductImage { ImageUrl = newMainImgUrl, IsMain = true, ProductId = product.Id });
         }
-        if(dto.AdditionalImages!= null)
+        if (dto.AdditionalImages != null)
         {
-            var oldAdditionalImgs = _productImageRepository.GetAll(x=>x.ProductId == product.Id&&x.IsMain==false);
-            var newAdditionalImgUrls = new List<string>();
-            
+            var oldAdditionalImgs = _productImageRepository.GetAll(x => x.ProductId == product.Id && x.IsMain == false);
+            foreach (var oldImg in await oldAdditionalImgs.ToListAsync())
+            {
+                var deletion = await _fileService.RemoveFileAsync(oldImg.ImageUrl);
+                if (!deletion)
+                    throw new ImageDeletionException();
+
+                _productImageRepository.Delete(oldImg);
+            }
+            foreach (var newImg in dto.AdditionalImages)
+            {
+                var newImgUrl = await _fileService.CreateFileAsync(newImg);
+                await _productImageRepository.CreateAsync(new ProductImage { ImageUrl = newImgUrl, ProductId = product.Id });
+            }
         }
+        if (dto.TagIds != null)
+        {
+            var oldPTags = await _productTagRepository.GetAll(predicate: x => x.ProductId == product.Id).ToListAsync();
+            foreach (var oldTag in oldPTags)
+            {
+                _productTagRepository.Delete(oldTag);
+            }
+            foreach (var newTag in dto.TagIds)
+            {
+                await _productTagRepository.CreateAsync(new ProductTag { ProductId = product.Id, TagId = newTag });
+            }
+        }
+        await _productRepository.SaveChangesAsync();
+
     }
 }

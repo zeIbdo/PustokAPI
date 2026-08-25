@@ -3,11 +3,5 @@ using System.Net;
 
 namespace Pustok.Application.Exceptions;
 
-public class AlreadyExistsException : Exception, ICustomException
-{
-    public AlreadyExistsException(string message = "Already exists") : base(message)
-    {
-    }
+ public class AlreadyExistsException(string message = "Already exists") : AppException(message, HttpStatusCode.BadRequest);
 
-    public HttpStatusCode StatusCode { get ; set ; } = HttpStatusCode.Conflict;
-}

@@ -3,11 +3,4 @@ using System.Net;
 
 namespace Pustok.Application.Exceptions;
 
-internal class ImageDeletionException : Exception, ICustomException
-{
-    public ImageDeletionException(string message = "Something wrong happened at image deletion") : base(message)
-    {
-    }
-
-    public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.InternalServerError;
-}
+internal class ImageDeletionException(string message= "Something wrong happened at image deletion"):AppException(message);
