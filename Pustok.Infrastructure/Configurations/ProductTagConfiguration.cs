@@ -11,5 +11,6 @@ public class ProductTagConfiguration : IEntityTypeConfiguration<ProductTag>
         builder.HasOne(x => x.Product).WithMany(p => p.ProductTags).HasForeignKey(s=>s.ProductId).OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Tag).WithMany(p => p.ProductTags).HasForeignKey(s=>s.TagId).OnDelete(DeleteBehavior.Cascade);
         builder.HasIndex(x => new { x.ProductId, x.TagId }).IsUnique();
+        builder.HasQueryFilter(v => !v.Product.IsDeleted);
     }
 }

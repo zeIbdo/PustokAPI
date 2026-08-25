@@ -1,11 +1,14 @@
 using Pustok.API.Handlers;
+using Pustok.Application;
+using Pustok.Infrastructure;
+using Pustok.Infrastructure.DataInitializers;
 using Scalar.AspNetCore;
 
 namespace Pustok.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,8 @@ namespace Pustok.API
                     ctx.ProblemDetails.Instance = $"{ctx.HttpContext.Request.Method} {ctx.HttpContext.Request.Path}";
                 };
             });
+            builder.Services.AddApplicationServices();
+            builder.Services.AddInfrastructureServices(builder.Configuration);  
             builder.Services.AddControllers();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,7 +31,9 @@ namespace Pustok.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
-
+            var scope = app.Services.CreateScope();
+            var initializer = scope.ServiceProvider.GetRequiredService<DbContextInitializer>();
+            await initializer.InitializeDbAsync();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

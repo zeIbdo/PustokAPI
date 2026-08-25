@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pustok.Domain.Entities;
 using Pustok.Infrastructure.Contexts;
+using Pustok.Infrastructure.DataInitializers;
 using Pustok.Infrastructure.Interceptors;
 using Pustok.Infrastructure.Repositories.Abstractions;
 using Pustok.Infrastructure.Repositories.Abstractions.Generic;

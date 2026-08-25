@@ -6,7 +6,7 @@ using Pustok.Domain.Enums;
 using Pustok.Infrastructure.Contexts;
 using System.Threading.Tasks;
 
-namespace Pustok.Infrastructure;
+namespace Pustok.Infrastructure.DataInitializers;
 
 public class DbContextInitializer
 {
@@ -40,7 +40,7 @@ public class DbContextInitializer
         await _userManager.CreateAsync(_admin, adminPassword!);
         await _userManager.AddToRoleAsync(_admin, IdentityRoles.Admin.ToString());
     }
-
+    
     private async Task _addRolesAsync()
     {
         var roles = Enum.GetNames(typeof(IdentityRoles));

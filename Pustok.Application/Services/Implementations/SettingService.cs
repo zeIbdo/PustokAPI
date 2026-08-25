@@ -29,13 +29,9 @@ public class SettingService : ISettingService
         return createdSetting.Id;
     }
 
-    public async Task DeleteAsync(int id)
+    public Task DeleteAsync(int id)
     {
-        var setting = await _settingRepository.GetAsync(id);
-        if (setting == null)
-            throw new NotFoundException("Setting not found");
-        _settingRepository.Delete(setting);
-        await _settingRepository.SaveChangesAsync();
+        throw new InvalidDeletionException("cant delete setting");
     }
 
     public async Task<List<SettingGetDto>> GetAllAsync()
@@ -64,7 +60,7 @@ public class SettingService : ISettingService
         var setting = await _settingRepository.GetAsync(id);
         if (setting == null)
             throw new NotFoundException("Setting not found");
-        setting  = _mapper.Map(dto,setting);
+        setting = _mapper.Map(dto, setting);
         _settingRepository.Update(setting);
         await _settingRepository.SaveChangesAsync();
     }
