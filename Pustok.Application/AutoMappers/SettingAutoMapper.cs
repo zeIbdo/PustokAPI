@@ -11,6 +11,6 @@ public class SettingAutoMapper : Profile
     {
         CreateMap<Setting, SettingGetDto>().ReverseMap();
         CreateMap<Setting, SettingCreateDto>().ReverseMap();
-        CreateMap<SettingUpdateDto, Setting>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
+        CreateMap<SettingUpdateDto, Setting>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

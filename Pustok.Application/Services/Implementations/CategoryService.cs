@@ -62,7 +62,7 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryGetDto> GetAsync(int id)
     {
-        var category = await _categoryRepository.GetAsync(id);
+        var category = await _categoryRepository.GetAsync(id,include:x=>x.Include(y=>y.Parent));
         if (category == null)
             throw new NotFoundException();
         return _mapper.Map<CategoryGetDto>(category);
@@ -84,11 +84,11 @@ public class CategoryService : ICategoryService
             if (!(await _categoryRepository.DoesExistAsync(x => x.Id == dto.ParentId)))
                 throw new NotFoundException("Category not found");
             if (dto.ParentId == id)
-                throw new InvalidParentIdException();
+                throw new InvalidParentIdException("Parent id cannot be same as its own id");
             foreach (var child in await _categoryRepository.GetAllDescendantsAsync(category.Id))
             {
                 if (child.Id == dto.ParentId)
-                    throw new InvalidParentIdException();
+                    throw new InvalidParentIdException("Parent id cannot be its child id");
             }
         }
         if (dto.Name != null)

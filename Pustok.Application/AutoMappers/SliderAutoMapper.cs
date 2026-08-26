@@ -11,6 +11,6 @@ public class SliderAutoMapper : Profile
     {
         CreateMap<Slider, SliderGetDto>().ReverseMap();
         CreateMap<Slider, SliderCreateDto>().ReverseMap();
-        CreateMap<SliderUpdateDto, Slider>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
+        CreateMap<SliderUpdateDto, Slider>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

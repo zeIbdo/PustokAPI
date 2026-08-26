@@ -26,6 +26,8 @@ public class TagService : ITagService
 
     public async Task<int> CreateAsync(TagCreateDto dto)
     {
+        if (await _tagRepository.DoesExistAsync(x => x.Name.ToLower() == dto.Name.ToLower()))
+            throw new AlreadyExistsException("Tag with this name already exists");
         var tag = _mapper.Map<Tag>(dto);
         var createdTag = await _tagRepository.CreateAsync(tag);
         await _tagRepository.SaveChangesAsync();
@@ -68,6 +70,11 @@ public class TagService : ITagService
         var tag = await _tagRepository.GetAsync(id);
         if (tag == null)
             throw new NotFoundException("Tag not found");
+        if (dto.Name != null)
+        {
+            if (await _tagRepository.DoesExistAsync(x => x.Name.ToLower() == dto.Name.ToLower()&&x.Id!=id))
+                throw new AlreadyExistsException("Tag with this name already exists");
+        }
         tag = _mapper.Map(dto, tag);
         _tagRepository.Update(tag);
         await _tagRepository.SaveChangesAsync();

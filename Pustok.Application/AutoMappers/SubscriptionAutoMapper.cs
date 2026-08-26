@@ -11,6 +11,6 @@ public class SubscriptionAutoMapper : Profile
     {
         CreateMap<Subscription, SubscriptionGetDto>().ReverseMap();
         CreateMap<Subscription, SubscriptionCreateDto>().ReverseMap();
-        CreateMap<SubscriptionUpdateDto, Subscription>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
+        CreateMap<SubscriptionUpdateDto, Subscription>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

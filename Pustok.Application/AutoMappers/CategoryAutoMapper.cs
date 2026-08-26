@@ -11,6 +11,6 @@ public class CategoryAutoMapper : Profile
     {
         CreateMap<Category, CategoryGetDto>().ReverseMap();
         CreateMap<Category, CategoryCreateDto>().ReverseMap();
-        CreateMap<CategoryUpdateDto, Category>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
+        CreateMap<CategoryUpdateDto, Category>().ForMember(x => x.Name, opt => opt.Condition(src => src.Name != null));
     }
 }

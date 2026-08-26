@@ -5,4 +5,5 @@ namespace Pustok.Application.Services.Abstractions;
 
 public interface ICategoryService:IGetService<CategoryGetDto>,IModifyService<CategoryCreateDto,CategoryUpdateDto>
 {
+    
 }

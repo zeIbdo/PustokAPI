@@ -10,6 +10,6 @@ internal class TagAutoMapper : Profile
     {
         CreateMap<Tag, TagGetDto>().ReverseMap();
         CreateMap<Tag, TagCreateDto>().ReverseMap();
-        CreateMap<TagUpdateDto,Tag>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
+        CreateMap<TagUpdateDto,Tag>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

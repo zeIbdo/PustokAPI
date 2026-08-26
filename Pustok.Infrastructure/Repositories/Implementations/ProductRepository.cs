@@ -31,7 +31,7 @@ public class ProductRepository : Repository<Product>, IProductRepository
         return query;
     }
 
-    public async Task<Paginate<Product>> GetPaginate(Expression<Func<Product, bool>>? predicate = null, Func<IQueryable<Product>, IIncludableQueryable<Product, object>>? include = null, Func<IQueryable<Product>, IOrderedQueryable<Product>>? orderBy = null, bool enableTracking = false, bool includeDeleted = false, int index = 0, int size = 10)
+    public async Task<Paginate<Product>> GetPaginateAsync(Expression<Func<Product, bool>>? predicate = null, Func<IQueryable<Product>, IIncludableQueryable<Product, object>>? include = null, Func<IQueryable<Product>, IOrderedQueryable<Product>>? orderBy = null, bool enableTracking = false, bool includeDeleted = false, int index = 0, int size = 10)
     {
         var query = _getQueryWithParamters(include, enableTracking);
         if (predicate is not null)

@@ -11,6 +11,6 @@ public class ServiceAutoMapper : Profile
     {
         CreateMap<Service, ServiceGetDto>().ReverseMap();
         CreateMap<Service, ServiceCreateDto>().ReverseMap();
-        CreateMap<ServiceUpdateDto, Service>().ReverseMap().ForAllMembers(opts => opts.PreCondition((src, dest, srcMember) => srcMember != null));
+        CreateMap<ServiceUpdateDto, Service>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

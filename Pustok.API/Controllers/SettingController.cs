@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Pustok.Application.Dtos.SettingDtos;
 using Pustok.Application.Services.Abstractions;
 using System.Threading.Tasks;
 
@@ -14,10 +15,23 @@ public class SettingController : ControllerBase
         _settingService = settingService;
     }
 
-    [HttpGet("settings")]
+    [HttpGet]
     public async Task<IActionResult> GetSettings()
     {
-        var settings  = await _settingService.GetAllAsync();
+        var settings = await _settingService.GetAllAsync();
         return Ok(settings);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateSetting(int id, [FromBody] SettingUpdateDto dto)
+    {
+        await _settingService.UpdateAsync(dto, id);
+        return NoContent();
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetSetting(int id)
+    {
+        var setting =await _settingService.GetAsync(id);
+        return Ok(setting);
     }
 }

@@ -41,10 +41,13 @@ public class ProductService : IProductService
     {
         if (!await _categoryRepository.DoesExistAsync(x => x.Id == dto.CategoryId))
             throw new NotFoundException("Category not found");
-        foreach (var tag in dto.TagIds)
+        if (dto.TagIds != null)
         {
-            if (!await _tagRepository.DoesExistAsync(x => x.Id == tag))
-                throw new NotFoundException("Tag not found");
+            foreach (var tag in dto.TagIds)
+            {
+                if (!await _tagRepository.DoesExistAsync(x => x.Id == tag))
+                    throw new NotFoundException("Tag not found");
+            }
         }
         var product = _mapper.Map<Product>(dto);
         var mainImgUrl = await _fileService.CreateFileAsync(dto.MainImage);
@@ -54,16 +57,20 @@ public class ProductService : IProductService
             additionalImgUrls.Add(await _fileService.CreateFileAsync(img));
         }
         var createdProduct = await _productRepository.CreateAsync(product);
+        await _productRepository.SaveChangesAsync();
         await _productImageRepository.CreateAsync(new ProductImage { ImageUrl = mainImgUrl, IsMain = true, ProductId = createdProduct.Id });
         foreach (var imgUrl in additionalImgUrls)
         {
             await _productImageRepository.CreateAsync(new ProductImage { ImageUrl = imgUrl, IsMain = false, ProductId = createdProduct.Id });
         }
-        foreach (var tagId in dto.TagIds)
+        if (dto.TagIds != null)
         {
-            await _productTagRepository.CreateAsync(new ProductTag { TagId = tagId, ProductId = createdProduct.Id });
+            foreach (var tagId in dto.TagIds)
+            {
+                await _productTagRepository.CreateAsync(new ProductTag { TagId = tagId, ProductId = createdProduct.Id });
+            }
         }
-        await _productRepository.SaveChangesAsync();
+        await _tagRepository.SaveChangesAsync();
         return createdProduct.Id;
     }
 
@@ -111,6 +118,19 @@ public class ProductService : IProductService
         return _mapper.Map<ProductGetDto>(product);
     }
 
+    public async Task<List<ProductGetDto>> GetDiscountedProducts()
+    {
+        var products = _productRepository.GetAll(predicate: x => x.Discount > 0, orderBy: x => x.OrderByDescending(y => y.Discount));
+        return _mapper.Map<List<ProductGetDto>>( await products.ToListAsync());
+    }
+
+    public async Task<List<ProductGetDto>> GetNewestProducts()
+    {
+        var products =  _productRepository.GetAll(predicate: x => x.CreatedAt >= DateTimeOffset.UtcNow.AddDays(-3),
+            orderBy: x => x.OrderByDescending(y => y.CreatedAt));
+        return _mapper.Map<List<ProductGetDto>>(await products.ToListAsync());
+    }
+
     public async Task<Paginate<ProductGetDto>> GetPaginateAsync(int index = 0, int size = 10)
     {
         var products = await _productRepository.GetPaginateAsync(include: x => x.Include(y => y.ProductImages).
@@ -118,6 +138,15 @@ public class ProductService : IProductService
         Include(x => x.ProductTags).
         ThenInclude(y => y.Tag), index: index, size: size);
         return _mapper.Map<Paginate<ProductGetDto>>(products);
+    }
+
+    public async Task<List<ProductGetDto>> GetProductsByCategory(int categoryId)
+    {
+        if (!await _categoryRepository.DoesExistAsync(x => x.Id == categoryId))
+            throw new NotFoundException("Category not found");
+        var products = _productRepository.GetAll(predicate: x => x.CategoryId == categoryId, include: x => x.Include(y => y.ProductImages));
+        var dtos = _mapper.Map<List<ProductGetDto>>(await products.ToListAsync());
+        return dtos;
     }
 
     public async Task UpdateAsync(ProductUpdateDto dto, int id)
@@ -167,7 +196,7 @@ public class ProductService : IProductService
             foreach (var newImg in dto.AdditionalImages)
             {
                 var newImgUrl = await _fileService.CreateFileAsync(newImg);
-                await _productImageRepository.CreateAsync(new ProductImage { ImageUrl = newImgUrl, ProductId = product.Id });
+                await _productImageRepository.CreateAsync(new ProductImage { ImageUrl = newImgUrl, ProductId = product.Id, IsMain = false });
             }
         }
         if (dto.TagIds != null)

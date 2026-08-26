@@ -70,9 +70,12 @@ public class Repository<T> : IRepositoryAsync<T> where T : BaseEntity
         return query.ToPaginateAsync(index, size);
     }
 
-    public Task<int> SaveChangesAsync(bool bypassInterceptor = false)
+    public async Task<int> SaveChangesAsync(bool bypassInterceptor = false)
     {
-        throw new NotImplementedException();
+        _context.BypassAuditableInterceptor= bypassInterceptor;
+        var result = await _context.SaveChangesAsync();
+        _context.BypassAuditableInterceptor = false;
+        return result;
     }
 
     public T Update(T entity)

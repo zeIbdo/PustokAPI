@@ -41,17 +41,18 @@ public class CloudinaryService : IFileService
         return url;
     }
 
-    static string GetPublicIdFromUrl(string url)
-    {
-        var imageUrl = new Uri(url);
-        var segments = imageUrl.AbsolutePath.Split('/');
-        var fileName = segments[^1];
-        return fileName.Substring(0, fileName.LastIndexOf('.'));
-    }
+    //static string GetPublicIdFromUrl(string url)
+    //{
+    //    var imageUrl = new Uri(url);
+    //    var segments = imageUrl.AbsolutePath.Split('/');
+    //    var fileName = segments[^1];
+    //    return fileName.Substring(0, fileName.LastIndexOf('.'));
+    //}
 
     public async Task<bool> RemoveFileAsync(string path)
     {
-        var fileName = GetPublicIdFromUrl(path);
+        string publicIdWithExtension = path.Substring(path.LastIndexOf("PustokApiJs"));
+        var fileName = publicIdWithExtension.Substring(0, publicIdWithExtension.LastIndexOf('.'));
         var deletionParams = new DeletionParams(fileName)
         {
             ResourceType = ResourceType.Image

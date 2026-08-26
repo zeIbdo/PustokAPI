@@ -16,7 +16,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.RatingStar).IsRequired(false).HasColumnType("decimal(2,1)");
         builder.Property(x => x.Stock).IsRequired();
         builder.Property(x => x.ViewCount).HasDefaultValue(0);
-        builder.HasIndex(x => x.ProductCode).IsUnique();
+        builder.HasIndex(x => x.ProductCode).IsUnique().HasFilter("[IsDeleted] = 0");
         builder.ToTable(t => t.HasCheckConstraint("CK_Product_Discount_Range", "[Discount]>=0 AND [Discount]<=100"));
         builder.ToTable(t => t.HasCheckConstraint("CK_Product_RatingStar_Range", "[RatingStar]>0 AND [RatingStar]<=5"));
         builder.ToTable(t => t.HasCheckConstraint("CK_Product_Price_Not_Negative", "[Price]>0"));
