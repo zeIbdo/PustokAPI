@@ -2,7 +2,7 @@
 
 namespace Pustok.Application.Dtos.AppUserDtos;
 
-public class RegisterDto : IDto
+public class RegisterRequestDto : IDto
 {
     public string Email { get; set; } = null!;
     public string Username { get; set; } = null!;

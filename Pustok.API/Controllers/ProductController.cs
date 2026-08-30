@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pustok.Application.Dtos.ProductDtos;
 using Pustok.Application.Services.Abstractions;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace Pustok.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
@@ -16,6 +18,7 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetProducts()
     {
         var products = await _productService.GetAllAsync();

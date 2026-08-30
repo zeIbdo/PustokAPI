@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using Pustok.API.Handlers;
 using Pustok.Application;
 using Pustok.Infrastructure;
 using Pustok.Infrastructure.DataInitializers;
 using Scalar.AspNetCore;
+using System.Text;
 
 namespace Pustok.API
 {
@@ -23,7 +27,27 @@ namespace Pustok.API
                 };
             });
             builder.Services.AddApplicationServices();
-            builder.Services.AddInfrastructureServices(builder.Configuration);  
+            builder.Services.AddInfrastructureServices(builder.Configuration);
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
+            {
+                x.MapInboundClaims = false;
+                x.SaveToken=false;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:JwtSecret"]!)),
+                     ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    NameClaimType = JwtRegisteredClaimNames.Name,
+                    RoleClaimType = "role"
+                };
+            });
+            builder.Services.AddAuthorization();
             builder.Services.AddControllers();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,6 +67,7 @@ namespace Pustok.API
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

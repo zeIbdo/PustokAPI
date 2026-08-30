@@ -26,6 +26,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Slider> Sliders { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

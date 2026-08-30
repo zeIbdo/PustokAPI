@@ -19,6 +19,8 @@ public static class ApplicationServiceRegistration
         services.AddScoped<ISliderService, SliderService>();
         services.AddScoped<ISettingService, SettingService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITagService, TagService>();
         services.AddFluentValidationAutoValidation();
         services.AddScoped<IFileService, CloudinaryService>();
