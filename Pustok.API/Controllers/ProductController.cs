@@ -8,7 +8,6 @@ namespace Pustok.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
@@ -18,7 +17,7 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> GetProducts()
     {
         var products = await _productService.GetAllAsync();
@@ -49,5 +48,12 @@ public class ProductController : ControllerBase
     {
         await _productService.UpdateAsync(dto, id);
         return NoContent();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProduct(int id)
+    {
+        var product = await _productService.GetAsync(id);
+        return Ok(product);
     }
 }

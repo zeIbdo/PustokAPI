@@ -44,4 +44,10 @@ public class AuthController : ControllerBase
         await _authService.LogoutAsync(refreshToken);
         return NoContent();
     }
+
+//    [HttpPost("forgot-password")]
+//    public IActionResult ForgotPassword([FromBody] ForgotPasswordDto dto)
+//    {
+
+//    }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pustok.Application.Dtos.CategoryDtos;
 using Pustok.Application.Services.Abstractions;
 using Pustok.Application.Services.Implementations;
@@ -18,6 +19,7 @@ public class CategoryController : ControllerBase
         _categoryService = categoryService;
         _productService = productService;
     }
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
@@ -30,6 +32,7 @@ public class CategoryController : ControllerBase
         var products = await _productService.GetProductsByCategory(id);
         return Ok(products);
     }
+    [Authorize(Roles ="Admin,Moderator")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategory(int id)
     {

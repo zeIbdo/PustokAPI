@@ -62,7 +62,7 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryGetDto> GetAsync(int id)
     {
-        var category = await _categoryRepository.GetAsync(id,include:x=>x.Include(y=>y.Parent));
+        var category = await _categoryRepository.GetAsync(id,include:x=>x.Include(y=>y.Parent)!);
         if (category == null)
             throw new NotFoundException();
         return _mapper.Map<CategoryGetDto>(category);

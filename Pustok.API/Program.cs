@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Pustok.API.Handlers;
 using Pustok.Application;
+using Pustok.Domain.Entities;
 using Pustok.Infrastructure;
 using Pustok.Infrastructure.DataInitializers;
 using Scalar.AspNetCore;
@@ -26,17 +29,61 @@ namespace Pustok.API
                     ctx.ProblemDetails.Instance = $"{ctx.HttpContext.Request.Method} {ctx.HttpContext.Request.Path}";
                 };
             });
-            builder.Services.AddApplicationServices();
-            builder.Services.AddInfrastructureServices(builder.Configuration);
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
+            builder.Services.AddSwaggerGen(c =>
             {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Description = "JWT Authorization header"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        },
+                        new string[] { }
+                    }
+                });
+            });
+            builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddInfrastructureServices(builder.Configuration);
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                        var userId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+                        if (userId == null)
+                        {
+                            context.Fail("Invalid token");
+                            return;
+                        }
+                        var user = await userManager.FindByIdAsync(userId);
+                        if (user == null || user.IsDisabled)
+                        {
+                            context.Fail("User is disabled");
+                            return;
+                        }
+
+                    }
+                };
                 x.MapInboundClaims = false;
-                x.SaveToken=false;
+                x.SaveToken = false;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:JwtSecret"]!)),
-                     ValidateIssuer = true,
+                    ValidateIssuer = true,
                     ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
 
                     ValidateAudience = true,
@@ -64,6 +111,7 @@ namespace Pustok.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
 

@@ -42,6 +42,7 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IBasketItemRepository, BasketItemRepository>();
         services.AddScoped<IProductImageRepository, ProductImageRepository>();
         services.AddScoped<IProductTagRepository, ProductTagRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IServiceRepository, ServiceRepository>();
         services.AddScoped<ISettingRepository, SettingRepository>();
         services.AddScoped<ISliderRepository, SliderRepository>();

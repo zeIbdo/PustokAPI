@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Pustok.Application.Exceptions.Generic;
 
 namespace Pustok.API.Handlers;
@@ -34,7 +35,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IPro
         //CloudinaryDotNet.Cloudinary => (StatusCodes.Status400BadRequest, "File upload failed"),
         //ArgumentNullException => (StatusCodes.Status400BadRequest, "Invalid argument provided"),
         //ArgumentException => (StatusCodes.Status400BadRequest, "Invalid argument provided"),
-        //UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
+        UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
+        SecurityTokenException => (StatusCodes.Status401Unauthorized, "Invalid token")
     };
     private static string GetProblemType(int statusCode) => statusCode switch
     {

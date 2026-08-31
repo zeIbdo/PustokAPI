@@ -73,7 +73,7 @@ public class JwtService : IJwtService
             new(JwtRegisteredClaimNames.Name,user.UserName ?? "username")
         };
         claims.AddRange(roles.Select(role => new Claim("role", role)));
-        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.JwtSecret));
         var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
         var descriptor = new SecurityTokenDescriptor
         {
