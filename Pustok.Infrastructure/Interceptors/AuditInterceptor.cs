@@ -46,8 +46,8 @@ public class AuditInterceptor:SaveChangesInterceptor
             }
             else if(entry.State == EntityState.Modified)
             {
-                if(existingEntry is not null)
-                    context.Entry(existingEntry.Entity).State = EntityState.Detached;
+                //if(existingEntry is not null)
+                //    context.Entry(existingEntry.Entity).State = EntityState.Detached;
                 entry.Entity.UpdatedBy = userId;
                 entry.Entity.UpdatedAt = DateTimeOffset.UtcNow;
             }

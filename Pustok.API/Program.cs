@@ -49,6 +49,13 @@ namespace Pustok.API
                     }
                 });
             });
+            builder.Services.AddCors(o =>
+            {
+                o.AddPolicy("Frontend", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+                });
+            });
             builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddAuthentication(options =>
@@ -111,14 +118,14 @@ namespace Pustok.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            app.UseCors("Frontend");
             app.MapControllers();
 
             app.Run();

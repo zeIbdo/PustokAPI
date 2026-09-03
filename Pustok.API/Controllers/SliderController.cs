@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pustok.Application.Dtos.SliderDtos;
 using Pustok.Application.Services.Abstractions;
 using System.Threading.Tasks;
@@ -15,14 +16,17 @@ namespace Pustok.API.Controllers
         {
             _sliderService = sliderService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetSliders()
         {
             var sliders = await _sliderService.GetAllAsync();
             return Ok(sliders);
         }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [Authorize(Roles = "Admin,Moderator")]
         public async Task<IActionResult> CreateSlider([FromForm]SliderCreateDto dto)
         {
             var sliderId = await _sliderService.CreateAsync(dto);
@@ -30,6 +34,7 @@ namespace Pustok.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteSlider(int id)
         {
             await _sliderService.DeleteAsync(id);
@@ -37,6 +42,7 @@ namespace Pustok.API.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin,Moderator")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateSlider(int id, [FromForm] SliderUpdateDto dto)
         {

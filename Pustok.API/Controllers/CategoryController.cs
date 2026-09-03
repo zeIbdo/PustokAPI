@@ -19,20 +19,21 @@ public class CategoryController : ControllerBase
         _categoryService = categoryService;
         _productService = productService;
     }
-    [Authorize]
+
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
         var categories = await _categoryService.GetAllAsync();
         return Ok(categories);
     }
+
     [HttpGet("{id}/products")]
     public async Task<IActionResult> GetProductsByCategory(int id)
     {
-        var products = await _productService.GetProductsByCategory(id);
+        var products = await _productService.GetProductsByCategoryAsync(id);
         return Ok(products);
     }
-    [Authorize(Roles ="Admin,Moderator")]
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategory(int id)
     {
@@ -40,19 +41,24 @@ public class CategoryController : ControllerBase
         return Ok(category);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         await _categoryService.DeleteAsync(id);
         return NoContent();
     }
+
+    [Authorize(Roles ="Admin,Moderator")]
     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody]CategoryCreateDto dto)
     {
         var catId = await _categoryService.CreateAsync(dto);
         return Ok(catId);
     }
+
     [HttpPatch("{id}")]
+    [Authorize(Roles ="Admin,Moderator")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto dto)
     {
         await _categoryService.UpdateAsync(dto, id);

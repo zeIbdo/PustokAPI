@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
     {
         var result = await _authService.RegisterUserAsync(dto);
-        if(result.Errors!=null) 
+        if (result.Errors != null)
             return BadRequest(result.Errors);
         return Ok(result);
     }
@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
     {
-        var response= await _authService.SignInUserAsync(dto);
+        var response = await _authService.SignInUserAsync(dto);
         return Ok(response);
     }
     [HttpPost("refresh")]
@@ -45,9 +45,19 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
-//    [HttpPost("forgot-password")]
-//    public IActionResult ForgotPassword([FromBody] ForgotPasswordDto dto)
-//    {
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        await _authService.SendResetTokenToEmailAsync(dto);
+        return NoContent();
+    }
 
-//    }
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        var result = await _authService.ResetPasswordAsync(dto);
+        if (!result)
+            return BadRequest();
+        return NoContent();
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pustok.Application.Dtos.ServiceDtos;
 using Pustok.Application.Services.Abstractions;
 using Pustok.Application.Services.Implementations;
@@ -25,6 +26,7 @@ public class ServiceController : ControllerBase
 
     [HttpPost]
     [Consumes("multipart/form-data")]
+    [Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> CreateService([FromForm] ServiceCreateDto dto)
     {
         var resultId = await _serviceEntityService.CreateAsync(dto);
@@ -32,6 +34,7 @@ public class ServiceController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteService(int id)
     {
         await _serviceEntityService.DeleteAsync(id);
@@ -40,6 +43,7 @@ public class ServiceController : ControllerBase
 
     [HttpPatch("{id}")]
     [Consumes("multipart/form-data")]
+    [Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> UpdateService(int id, [FromForm] ServiceUpdateDto dto)
     {
         await _serviceEntityService.UpdateAsync(dto, id);

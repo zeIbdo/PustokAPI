@@ -69,6 +69,8 @@ public class SliderService : ISliderService
         if (slider == null)
             throw new NotFoundException("Slider not found");
         slider = _mapper.Map(dto, slider);
+        Console.WriteLine($"DTO PRICE: {dto.Price}");
+        Console.WriteLine($"ENTITY PRICE: {slider.Price}");
         if (dto.Image != null)
         {
             var imageDeletion = await _fileService.RemoveFileAsync(slider.ImageUrl!);

@@ -47,6 +47,16 @@ public class Repository<T> : IRepositoryAsync<T> where T : BaseEntity
         return query;
     }
 
+    public Task<Paginate<T>> GetPaginateAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool enableTracking = false,int index = 0,int size = 10)
+    {
+        var query = _getQueryWithParamters(include, enableTracking);
+        if(predicate is not null)
+            query = query.Where(predicate);
+        if (orderBy is not null)
+            query = orderBy(query);
+        return query.ToPaginateAsync(index, size);
+    }
+
 
     public async Task<T?> GetAsync(int id, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, bool enableTracking = false)
     {
@@ -58,16 +68,6 @@ public class Repository<T> : IRepositoryAsync<T> where T : BaseEntity
     {
         var query = _getQueryWithParamters(include, enableTracking);
         return await query.FirstOrDefaultAsync(expression);
-    }
-
-    public Task<Paginate<T>> GetPaginateAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool enableTracking = false,int index = 0,int size = 10)
-    {
-        var query = _getQueryWithParamters(include, enableTracking);
-        if(predicate is not null)
-            query = query.Where(predicate);
-        if (orderBy is not null)
-            query = orderBy(query);
-        return query.ToPaginateAsync(index, size);
     }
 
     public async Task<int> SaveChangesAsync(bool bypassInterceptor = false)

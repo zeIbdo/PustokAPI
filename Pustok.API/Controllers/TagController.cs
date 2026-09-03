@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pustok.Application.Dtos.TagDtos;
 using Pustok.Application.Services.Abstractions;
 using System.Threading.Tasks;
@@ -15,19 +16,23 @@ public class TagController : ControllerBase
     {
         _tagService = tagService;
     }
+
     [HttpGet]
     public async Task<IActionResult> GetTags()
     {
         var tags = await _tagService.GetAllAsync();
         return Ok(tags);
     }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTag(int id)
     {
         var tag = await _tagService.GetAsync(id);
         return Ok(tag);
     }
+
     [HttpPost]
+    [Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> CreateTag([FromBody] TagCreateDto dto)
     {
         var tagId = await _tagService.CreateAsync(dto);
@@ -35,6 +40,7 @@ public class TagController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTag(int id)
     {
         await _tagService.DeleteAsync(id);
@@ -42,6 +48,7 @@ public class TagController : ControllerBase
     }
 
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> UpdateTag(int id, [FromBody] TagUpdateDto dto)
     {
         await _tagService.UpdateAsync(dto, id);

@@ -21,6 +21,6 @@ public class ProductGetDto:IDto
     public string ProductCode { get; set; } = null!;
     public decimal? RatingStar { get; set; }
     public ICollection<TagGetDto> Tags { get; set; } = [];
-    public ICollection<BasketItemGetDto> BasketItems { get; set; } = [];
+    //public ICollection<BasketItemGetDto> BasketItems { get; set; } = [];
     public ICollection<ProductImageGetDto> ProductImages { get; set; } = [];
 }

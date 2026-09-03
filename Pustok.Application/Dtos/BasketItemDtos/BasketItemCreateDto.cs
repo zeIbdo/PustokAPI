@@ -4,6 +4,5 @@ namespace Pustok.Application.Dtos.BasketItemDtos;
 
 public class BasketItemCreateDto:IDto
 {
-    public int ProductId { get; set; }
-    public int Count { get; set; }
+    public int Count { get; set; } = 1;
 }

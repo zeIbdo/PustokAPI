@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pustok.Application.Dtos.SettingDtos;
 using Pustok.Application.Services.Abstractions;
 using System.Threading.Tasks;
@@ -23,11 +24,13 @@ public class SettingController : ControllerBase
     }
 
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> UpdateSetting(int id, [FromBody] SettingUpdateDto dto)
     {
         await _settingService.UpdateAsync(dto, id);
         return NoContent();
     }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetSetting(int id)
     {

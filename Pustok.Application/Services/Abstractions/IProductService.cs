@@ -6,7 +6,10 @@ namespace Pustok.Application.Services.Abstractions;
 
 public interface IProductService:IGetService<ProductGetDto>,IModifyService<ProductCreateDto,ProductUpdateDto>
 {
-    Task<List<ProductGetDto>> GetProductsByCategory(int categoryId);
-    Task<List<ProductGetDto>> GetNewestProducts();
-    Task<List<ProductGetDto>> GetDiscountedProducts();
+    Task<List<ProductGetDto>> GetProductsByCategoryAsync(int categoryId);
+    Task<List<ProductGetDto>> GetProductsByNameAsync(string name);
+    Task<List<ProductGetDto>> GetNewestProductsAsync();
+    Task<List<ProductGetDto>> GetDiscountedProductsAsync();
+    Task<List<ProductGetDto>> GetMostSoldProductsAsync();
+    Task<ProductDetailDto> GetDetailedProductAsync(int id);
 }

@@ -25,6 +25,8 @@ public class SubscriptionService : ISubscriptionService
     public async Task<int> CreateAsync(SubscriptionCreateDto dto)
     {
         var subscription = _mapper.Map<Subscription>(dto);
+        if(await _subscriptionRepository.DoesExistAsync(x=>x.Email.ToUpper()==dto.Email.ToUpper()))
+            throw new AlreadyExistsException("Email with this subscribtion already exists");
         var createdSubscription = await _subscriptionRepository.CreateAsync(subscription);
         await _subscriptionRepository.SaveChangesAsync();
         return createdSubscription.Id;

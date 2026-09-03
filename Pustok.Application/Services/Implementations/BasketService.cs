@@ -98,7 +98,7 @@ public class BasketService : IBasketService
     public async Task<BasketDto> GetBasketAsync()
     {
         var userId = _getUserId();
-        var basketItems = await _basketItemRepository.GetAll(predicate: x => x.AppUserId == userId, include: x => x.Include(y => y.Product)).ToListAsync();
+        var basketItems = await _basketItemRepository.GetAll(predicate: x => x.AppUserId == userId, include: x => x.Include(y => y.Product).ThenInclude(z=>z.ProductImages)).ToListAsync();
         var dtos = _mapper.Map<List<BasketItemGetDto>>(basketItems);
         var basket = new BasketDto { Items = dtos };
         basket.Count = basketItems.Sum(x => x.Count);
